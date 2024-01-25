@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validación de Contraseña</title>
+
+    <!-- Agregar la biblioteca htmx -->
+    <script src="https://unpkg.com/htmx.org@1.7.0/dist/htmx.js"></script>
+</head>
+
+<body>
+    <form method="post" action="/login" hx-post="/login">
+        {{ form.hidden_tag() }}
+        <label for="{{ form.username.id }}">Usuario:</label>
+        <input type="text" name="username" id="{{ form.username.id }}" 
+            hx-post="/check_password" 
+            hx-trigger="input"
+            hx-target="#indicator">
+
+        <label for="{{ form.password.id }}">Contraseña:</label>
+        <input type="password" name="password" id="{{ form.password.id }}" 
+            hx-post="/check_password" 
+            hx-trigger="input"
+            hx-target="#indicator">
+
+        <input type="password" name="confirm_password" id="{{ form.confirm_password.id }}" 
+            hx-post="/check_password"
+            hx-trigger="input" 
+            hx-target="#indicator">
+            
+        <div id="indicator"></div>
+        <br>
+        <button type="submit">Iniciar Sesión</button>
+    </form>
+
+
+
+
+</body>
+
+</html>
