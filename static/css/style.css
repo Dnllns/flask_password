@@ -1,0 +1,34 @@
+body {
+    background-color: #343a40; /* Fondo oscuro */
+    color: #ffffff; /* Texto blanco */
+}
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #454d55; /* Fondo del formulario */
+    border-radius: 10px;
+    margin-top: 50px;
+}
+
+button {
+    background-color: #007bff; /* Color azul de Bootstrap */
+    color: #ffffff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#indicator {
+    margin-top: 15px;
+}
+
+.alert {
+    margin-top: 15px;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 0.8em;
+}
+

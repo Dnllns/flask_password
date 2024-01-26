@@ -8,36 +8,122 @@
 
     <!-- Agregar la biblioteca htmx -->
     <script src="https://unpkg.com/htmx.org@1.7.0/dist/htmx.js"></script>
+
+    <!-- Agregar la biblioteca de iconos de Font Awesome -->
+    <script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
+
+    <!-- Agregar jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Agregar Bootstrap CSS (5.3.0) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
-    <form method="post" action="/login" hx-post="/login">
-        {{ form.hidden_tag() }}
-        <label for="{{ form.username.id }}">Usuario:</label>
-        <input type="text" name="username" id="{{ form.username.id }}" 
-            hx-post="/check_password" 
-            hx-trigger="input"
-            hx-target="#indicator">
+    <div class="container">
+        <span style="color: red;">Ejemplo formulario htmx</span>
 
-        <label for="{{ form.password.id }}">Contraseña:</label>
-        <input type="password" name="password" id="{{ form.password.id }}" 
-            hx-post="/check_password" 
-            hx-trigger="input"
-            hx-target="#indicator">
+        <form method="post" action="" hx-post="">
+            <h3>Registro de Usuario</h3>
+            {{ form.hidden_tag() }}
 
-        <input type="password" name="confirm_password" id="{{ form.confirm_password.id }}" 
-            hx-post="/check_password"
-            hx-trigger="input" 
-            hx-target="#indicator">
+            <div class="row mb-3">
+                <div class="col">
+
+                    <label for="{{ form.username.id }}" class="form-label">Usuario:</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" name="username" id="{{ form.username.id }}" hx-post="/check_username"
+                                hx-trigger="input" hx-target="#msg-username" class="form-control">
+                        </div>
+                        <div id="uname_validator_symbol" class="col"></div>
+                    </div>
+                    <div id="msg-username"></div>
+
+                </div>
+            </div>
+
+            <div class="row mb-1">
+                <div class="col">
+                    <label for="{{ form.password.id }}" class="form-label">Contraseña:</label>
+
+                    <div class="row">
+                        <div class="col">
+                            <input type="password" name="password" id="{{ form.password.id }}" class="form-control"
+                                hx-post="/check_password" hx-trigger="input" hx-target="#msg-password">
+                        </div>
+                        <div id="password_validator_symbol" class="col">
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label for="{{ form.confirm_password.id }}" class="form-label">Confirmar Contraseña:</label>
+                    <input type="password" name="confirm_password" id="{{ form.confirm_password.id }}"
+                        hx-post="/check_password" hx-trigger="input" hx-target="#msg-password" class="form-control">
+                </div>
+            </div>
+
+            <div id="msg-password"></div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Agregar Bootstrap JS (opcional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Agregar el script de actualizacion estado del username -->
+    <script>
+
+        // Despues de la carga del documento
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Actualizar el estado del username
+            update_uname_status();
+
+            // Actualizar el estado del password
+            update_password_status();           
+
+        });
+
+        function update_uname_status() {
             
-        <div id="indicator"></div>
-        <br>
-        <button type="submit">Iniciar Sesión</button>
-    </form>
+            var symbol_cnt = $("#uname_validator_symbol")
+            var msg_cnt = $("#msg-username");
+            msg_cnt.on("htmx:afterSettle", function (event) {
+                data_status = msg_cnt.find("div").attr("data-status");
+                if (data_status == "ok") {
+                    symbol_cnt.html('<i class="fas fa-check-circle text-success"></i>');
+                } else {
+                    symbol_cnt.html('<i class="fas fa-times-circle text-danger"></i>');
+                }
+            });
+        }
 
+        function update_password_status() {
+            
+            var symbol_cnt = $("#password_validator_symbol")
+            var msg_cnt = $("#msg-password");
+            msg_cnt.on("htmx:afterSettle", function (event) {
+                data_status = msg_cnt.find("div").attr("data-status");
+                if (data_status == "ok") {
+                    symbol_cnt.html('<i class="fas fa-check-circle text-success"></i>');
+                } else {
+                    symbol_cnt.html('<i class="fas fa-times-circle text-danger"></i>');
+                }
+            });
+        }
 
-
-
+    </script>
 </body>
 
 </html>
