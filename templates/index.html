@@ -1,3 +1,5 @@
+{% import 'bs_input_with_search.jinja' as bs_input_with_search %}
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -74,6 +76,18 @@
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
             </div>
+
+            <!-- Campo input con select y ajax via htmx -->
+            {{ 
+                bs_input_with_search.form_component(
+                    input_field=form.campo_input, 
+                    select_field=form.campo_select, 
+                    hx_post='/opciones',
+                    form_group_class='',
+                    errors_id='msg-campo_input',
+                    data_container_id='data-container-campo_input',
+                ) 
+            }}
 
         </form>
     </div>

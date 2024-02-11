@@ -1,0 +1,114 @@
+{% macro form_component(
+    input_field,
+    select_field,
+    hx_post,
+    form_group_class,
+    errors_id,
+    data_container_id
+) %}
+
+  <div class="form-group {{ form_group_class }}">
+
+
+    <label for="{{ input_field.id }}">{{ input_field.label }}</label>
+    <div class="input-group mt-2 {{ input_field.class }}">
+      {{ input_field }}
+    </div>
+    
+    <div class="mt-2">
+      {{ select_field }}
+    </div>
+
+    <div id="{{ errors_id }}">
+    </div>
+
+
+    <div id="{{ input_field.render_kw['hx-target'][1:] }}" style="display: none;">
+    </div>
+  
+  </div>
+
+  <script>
+    // ... (código JavaScript existente)
+
+    // Función para seleccionar la opción del select
+    function seleccionarOpcion() {
+      var select = document.getElementById("{{ select_field.id }}");
+      var input = document.getElementById("{{ input_field.id }}");
+      input.value = select.value;
+      select.style.display = "none";
+
+      // Generar evento de cambio en el input con información adicional
+      var event = new InputEvent("input", { bubbles: true });
+      input.dispatchEvent(event);
+
+    }
+
+    // Agregar evento para mostrar el select al escribir en el input
+    // y ocultarlo al hacer clic fuera del select o del input
+    var input = document.getElementById("{{ input_field.id }}");
+    input.addEventListener("input", function() {
+      var select = document.getElementById("{{ select_field.id }}");
+      select.style.display = "block";
+    });
+    document.addEventListener("click", function(event) {
+      var select = document.getElementById("{{ select_field.id }}");
+      var input = document.getElementById("{{ input_field.id }}");
+      if (event.target != select && event.target != input) {
+        select.style.display = "none";
+      }
+    });
+  
+    // Evento despues de que se actualiza el contenido del contenedor
+    document.body.addEventListener("htmx:afterSettle", function(event) {
+
+      // Obtener el contenedor de datos y su contenido
+      data = get_data();
+      console.log("data: " + data)
+      update_errors(data);
+      update_select(data);
+
+    });
+
+    function update_select(data) {
+      console.log("Actualizando select...")
+      var select = document.getElementById("{{ select_field.id }}");
+      select.innerHTML = data["opciones"]["html"];
+    }
+
+    function update_errors(data) {
+      console.log("Actualizando errores...")
+      console.log("input_data: " + data["input"])
+      console.log("status: " + data["validacion"]["status"])
+      var errors_container = document.getElementById("{{ errors_id }}");
+      errors_container.innerHTML = data["validacion"]["html"]
+    }
+
+    /*
+    * Función para obtener el contenedor de datos y su contenido codificado en base64
+    * y decodificarlo y convertirlo en un objeto JSON
+    */
+    function get_data() {
+      var data_container = document.getElementById("{{ data_container_id }}");
+      var data = data_container.innerHTML;
+      var decoded_data = atob(data);
+      var json_data = JSON.parse(decoded_data);
+      return json_data;
+    }
+
+
+  </script>
+
+  <style>
+    #{{ select_field.id }} {
+      display: none;
+      width: 100%;
+      max-height: 80px;
+      overflow-y: auto;
+    }
+    #{{ select_field.id }} option:hover {
+      background-color: #ced4da;
+    }
+  </style>
+
+{% endmacro %}
